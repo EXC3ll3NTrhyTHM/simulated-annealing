@@ -10,8 +10,9 @@ public class Student {
         this.studentID = studentID;
     }
 
-    ArrayList<Integer> getCompatibility() {
-        return compatibility;
+    Integer getCompatibility(Student student) {
+        int studentID = student.getStudentID();
+        return compatibility.get(studentID);
     }
 
     int getStudentID() {
