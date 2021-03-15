@@ -89,7 +89,7 @@ public class Main {
 
             ArrayList<Student> dorm2 = dorms.get(indexForDorm2);
             ArrayList<Student> dummyDorm2 = new ArrayList<>();
-            copy(dorm1, dummyDorm2);
+            copy(dorm2, dummyDorm2);
             Student student2 = dorm2.get(indexForStudent2);
 
             dummyDorm1.set(indexForStudent1, student2);
@@ -105,8 +105,8 @@ public class Main {
 
             if (randomNumber < probability1 &&
                     randomNumber < probability2) {
-                dorm2 = dummyDorm2;
-                dorm1 = dummyDorm1;
+                dorms.set(indexForDorm2, dummyDorm2);
+                dorms.set(indexForDorm1, dummyDorm1);
             }
         }
 
