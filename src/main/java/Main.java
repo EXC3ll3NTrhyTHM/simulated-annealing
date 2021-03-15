@@ -60,53 +60,61 @@ public class Main {
             }
         }
 
-        double temperature = 20000;
-        double coolingFactor = 0.99995;
+        double temperature = 1000;
+        double coolingFactor = 0.95;
         // sort the dorms by how compatible students are using simulated annealing technique
         // iterate through dorms until temperature reaches 0
         // iterate 20k times
-        int dorm1Comp = calculateDormTotalComp(dorms.get(0));
 
-        // idea from here https://stackabuse.com/simulated-annealing-optimization-algorithm-in-java/
+        // some ideas from here https://stackabuse.com/simulated-annealing-optimization-algorithm-in-java/
         for (double t = temperature; t > 1; t *= coolingFactor) {
+            int swapCount = 0;
+            int swapAttempts = 0;
             // select dorm at random and student from dorm at random
             // do same for another student and swap them in a dummy dorm first, check new compatibility score
-            // before swapping in real dorms we will want to compare the potential new compatibility scores and only swap if the probability
-            // is high enough
+            // before swapping in real dorms I will want to compare the potential new compatibility scores and only swap if the probability
+            // is high enough for both dorms
 
             // Random number generator implementation from here:
             // https://stackoverflow.com/questions/363681/how-do-i-generate-random-integers-within-a-specific-range-in-java
-            int indexForStudent1 = ThreadLocalRandom.current().nextInt(0, 4);
-            int indexForDorm1 = ThreadLocalRandom.current().nextInt(0, 50);
+            while (swapCount < 2000 && swapAttempts < 20000) {
+                int indexForStudent1 = ThreadLocalRandom.current().nextInt(0, 4);
+                int indexForDorm1 = ThreadLocalRandom.current().nextInt(0, 50);
 
-            ArrayList<Student> dorm1 = dorms.get(indexForDorm1);
-            ArrayList<Student> dummyDorm1 = new ArrayList<>();
-            copy(dorm1, dummyDorm1);
-            Student student1 = dorm1.get(indexForStudent1);
+                ArrayList<Student> dorm1 = dorms.get(indexForDorm1);
+                ArrayList<Student> dummyDorm1 = new ArrayList<>();
+                copy(dorm1, dummyDorm1);
+                Student student1 = dorm1.get(indexForStudent1);
 
-            int indexForStudent2 = ThreadLocalRandom.current().nextInt(0, 4);
-            int indexForDorm2 = ThreadLocalRandom.current().nextInt(0, 50);
+                int indexForStudent2 = ThreadLocalRandom.current().nextInt(0, 4);
+                while (indexForStudent2 == indexForStudent1) {
+                    indexForStudent2 = ThreadLocalRandom.current().nextInt(0, 4);
+                }
 
-            ArrayList<Student> dorm2 = dorms.get(indexForDorm2);
-            ArrayList<Student> dummyDorm2 = new ArrayList<>();
-            copy(dorm2, dummyDorm2);
-            Student student2 = dorm2.get(indexForStudent2);
+                int indexForDorm2 = ThreadLocalRandom.current().nextInt(0, 50);
+                while (indexForDorm2 == indexForDorm1) {
+                    indexForDorm2 = ThreadLocalRandom.current().nextInt(0, 50);
+                }
 
-            dummyDorm1.set(indexForStudent1, student2);
-            dummyDorm2.set(indexForStudent2, student1);
-            
-            double randomNumber = Math.random();
-            double probability1 = probability(calculateDormTotalComp(dorm1), calculateDormTotalComp(dummyDorm1), t);
-            double probability2 = probability(calculateDormTotalComp(dorm2), calculateDormTotalComp(dummyDorm2), t);
+                ArrayList<Student> dorm2 = dorms.get(indexForDorm2);
+                ArrayList<Student> dummyDorm2 = new ArrayList<>();
+                copy(dorm2, dummyDorm2);
+                Student student2 = dorm2.get(indexForStudent2);
 
-//            if (t < 5) {
-//                System.out.println("low temp");
-//            }
+                dummyDorm1.set(indexForStudent1, student2);
+                dummyDorm2.set(indexForStudent2, student1);
 
-            if (randomNumber < probability1 &&
-                    randomNumber < probability2) {
-                dorms.set(indexForDorm2, dummyDorm2);
-                dorms.set(indexForDorm1, dummyDorm1);
+                double randomNumber = Math.random();
+                double probability1 = probability(calculateDormTotalComp(dorm1), calculateDormTotalComp(dummyDorm1), t);
+                double probability2 = probability(calculateDormTotalComp(dorm2), calculateDormTotalComp(dummyDorm2), t);
+
+                if (randomNumber < probability1 &&
+                        randomNumber < probability2) {
+                    dorms.set(indexForDorm2, dummyDorm2);
+                    dorms.set(indexForDorm1, dummyDorm1);
+                    swapCount++;
+                }
+                swapAttempts++;
             }
         }
 
