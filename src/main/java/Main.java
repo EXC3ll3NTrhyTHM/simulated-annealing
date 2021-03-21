@@ -1,5 +1,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -127,6 +129,22 @@ public class Main {
         System.out.println("Lowest value: "+min);
         System.out.println("Starting Temp: "+temperature);
         System.out.println("Cooling factor: "+coolingFactor);
+        try {
+            PrintWriter writer = new PrintWriter("results.txt", "UTF-8");
+            writer.println("Average score: "+average);
+            writer.println("Highest value: "+max);
+            writer.println("Lowest value: "+min);
+            writer.println("Starting Temp: "+temperature);
+            writer.println("Cooling factor: "+coolingFactor);
+            for (int i = 0; i < 50; i++){
+                for (int j = 0; j < 4; j++){
+                    writer.println(dorms.get(i).get(j).compatibility.toString());
+                }
+            }
+            writer.close();
+        } catch (IOException e) {
+            System.out.println(e.toString());
+        }
     }
 
     static void copy(ArrayList<Student> dorm1, ArrayList<Student> dorm2) {
