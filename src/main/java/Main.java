@@ -1,9 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Main {
@@ -70,10 +67,6 @@ public class Main {
         for (double t = temperature; t > 1; t *= coolingFactor) {
             int swapCount = 0;
             int swapAttempts = 0;
-            // select dorm at random and student from dorm at random
-            // do same for another student and swap them in a dummy dorm first, check new compatibility score
-            // before swapping in real dorms I will want to compare the potential new compatibility scores and only swap if the probability
-            // is high enough for both dorms
 
             // Random number generator implementation from here:
             // https://stackoverflow.com/questions/363681/how-do-i-generate-random-integers-within-a-specific-range-in-java
@@ -108,6 +101,8 @@ public class Main {
                 double probability1 = probability(calculateDormTotalComp(dorm1), calculateDormTotalComp(dummyDorm1), t);
                 double probability2 = probability(calculateDormTotalComp(dorm2), calculateDormTotalComp(dummyDorm2), t);
 
+                // Maybe this could be optimized further like if one dorm has a greater compatibility and the other's
+                // remains the same
                 if (randomNumber < probability1 &&
                         randomNumber < probability2) {
                     dorms.set(indexForDorm2, dummyDorm2);
@@ -122,7 +117,16 @@ public class Main {
         for (int i = 0; i < 50; i++) {
             dormTotals[i] = calculateDormTotalComp(dorms.get(i));
         }
-        System.out.println(Arrays.stream(dormTotals).average());
+
+        double average = Arrays.stream(dormTotals).average().getAsDouble();
+        int max = Arrays.stream(dormTotals).max().getAsInt();
+        int min = Arrays.stream(dormTotals).min().getAsInt();
+
+        System.out.println("Average score: "+average);
+        System.out.println("Highest value: "+max);
+        System.out.println("Lowest value: "+min);
+        System.out.println("Starting Temp: "+temperature);
+        System.out.println("Cooling factor: "+coolingFactor);
     }
 
     static void copy(ArrayList<Student> dorm1, ArrayList<Student> dorm2) {
